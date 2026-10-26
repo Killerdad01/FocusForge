@@ -1,1 +1,385 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101025">
+<title>FocusForge - Study Smarter</title>
+<style>
+:root{--bg:#0c0c1b;--card:#17172c;--purple:#9470ff;--mint:#65f2c0;--text:#f5f3ff;--muted:#aaa8c4}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
+header{padding:22px 18px 12px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:22px;font-weight:850;letter-spacing:-1px}
+.logo span{color:var(--mint)}
+.streak{background:#27203b;padding:9px 12px;border-radius:14px;color:#ffbf69;font-weight:bold}
+main{max-width:650px;margin:auto;padding:8px 16px 100px}
+.hello{color:var(--muted);margin-top:12px;font-size:14px}
+h1{font-size:29px;line-height:1.2;margin:5px 0 12px}
+h2{font-size:19px;margin:0 0 12px}
+p{line-height:1.5}
+.card{background:var(--card);border:1px solid #2a2945;border-radius:21px;padding:17px;margin:13px 0}
+.hero{background:linear-gradient(135deg,#30205a,#17172e 72%);border-color:#514078}
+.eyebrow{font-size:12px;color:var(--mint);font-weight:800;text-transform:uppercase;letter-spacing:1px}
+.quote{color:#ded8ff;font-size:15px;margin:10px 0 0}
+.muted{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{background:var(--card);border:1px solid #2a2945;border-radius:19px;padding:15px;min-height:133px;cursor:pointer}
+.tile:active,button:active{transform:scale(.98)}
+.tile .emoji{font-size:27px}
+.tile h3{font-size:15px;margin:10px 0 4px}
+.tile p{font-size:12px;color:var(--muted);margin:0}
+.progress{height:7px;background:#302e48;border-radius:9px;overflow:hidden;margin:12px 0}
+.progress div{height:100%;background:var(--mint);width:0%;transition:width .3s}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center}
+.day{font-size:11px;color:var(--muted)}
+.dot{margin:6px auto 0;width:30px;height:30px;border-radius:50%;background:#292840;display:grid;place-items:center;font-size:12px}
+.dot.done{background:var(--mint);color:#10251f;font-weight:bold}
+button,input,select{font:inherit}
+button{border:0;border-radius:12px;padding:11px 14px;background:var(--purple);color:white;font-weight:750;cursor:pointer}
+button.secondary{background:#302e49}
+button.mint{background:var(--mint);color:#10251f}
+button.danger{background:#512737}
+input,select{width:100%;background:#101024;color:white;border:1px solid #3a3858;border-radius:11px;padding:12px;margin:5px 0 10px}
+label{font-size:13px;color:var(--muted)}
+.row{display:flex;gap:8px;align-items:center}
+.row input{flex:1;min-width:0}
+.row button{flex-shrink:0}
+.subject,.task{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #302e48}
+.subject:last-child,.task:last-child{border-bottom:0}
+.subject input[type=checkbox],.task input[type=checkbox]{width:20px;height:20px;margin:0;accent-color:var(--mint);flex-shrink:0}
+.subject span,.task span{flex:1;overflow-wrap:anywhere}
+.checked{text-decoration:line-through;color:var(--muted)}
+.timer{text-align:center;padding:16px 0}
+.time{font-size:53px;font-weight:850;letter-spacing:2px}
+.timer p{color:var(--muted);font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:#111126;border-radius:14px;padding:13px 5px;text-align:center}
+.stat strong{display:block;font-size:22px;color:var(--mint)}
+.stat span{font-size:11px;color:var(--muted)}
+section{scroll-margin-top:15px}
+footer{position:fixed;bottom:0;left:0;right:0;background:#121225f5;border-top:1px solid #2a2945;display:flex;justify-content:space-around;padding:10px 4px calc(10px + env(safe-area-inset-bottom));z-index:5}
+footer button{background:transparent;color:var(--muted);padding:7px 9px;font-size:12px}
+footer button.active{color:var(--mint)}
+.hidden{display:none!important}
+.small{font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">✦ Focus<span>Forge</span></div>
+  <div class="streak">🔥 <span id="streak">0</span> days</div>
+</header>
+
+<main>
+<section id="home">
+  <p class="hello" id="dateText">YOUR STUDY SPACE</p>
+  <h1>Build your future,<br>one session at a time.</h1>
+
+  <div class="card hero">
+    <div class="eyebrow">✦ Daily motivation</div>
+    <p class="quote" id="quote">Small progress every day adds up to big results.</p>
+    <div class="muted" style="margin-top:15px">TODAY'S MISSION</div>
+    <div id="missionText" style="font-weight:750;margin-top:5px">Complete one focused study session.</div>
+    <div class="progress"><div id="missionBar"></div></div>
+    <div class="muted" id="missionCount">0 of 1 sessions completed</div>
+  </div>
+
+  <div class="card">
+    <h2>📅 Your weekly streak</h2>
+    <div class="week" id="week"></div>
+  </div>
+
+  <h2 style="margin:23px 0 12px">Your study tools</h2>
+  <div class="grid">
+    <div class="tile" onclick="go('tracking')">
+      <div class="emoji">📚</div><h3>Study Tracker</h3>
+      <p id="subjectSummary">Track today's subjects</p>
+    </div>
+    <div class="tile" onclick="go('focus')">
+      <div class="emoji">⏱️</div><h3>Focus Timer</h3>
+      <p>Study without distractions</p>
+    </div>
+    <div class="tile" onclick="go('tasks')">
+      <div class="emoji">✅</div><h3>Study Tasks</h3>
+      <p id="taskSummary">Manage your tasks</p>
+    </div>
+    <div class="tile" onclick="go('progress')">
+      <div class="emoji">📈</div><h3>My Progress</h3>
+      <p>Review your study stats</p>
+    </div>
+  </div>
+</section>
+
+<section id="tracking" class="hidden">
+  <h1>📚 Study Tracker</h1>
+  <p class="muted">Tick a subject when you finish studying it. Your daily record is saved.</p>
+  <div class="card">
+    <h2>Today's subjects</h2>
+    <div id="subjects"></div>
+    <label for="subjectInput">Add your own subject</label>
+    <div class="row">
+      <input id="subjectInput" placeholder="e.g. Electrostatics">
+      <button onclick="addSubject()">Add</button>
+    </div>
+  </div>
+</section>
+
+<section id="focus" class="hidden">
+  <h1>⏱️ Focus Timer</h1>
+  <p class="muted">Choose a session and give your studies your full attention.</p>
+  <div class="card">
+    <div class="timer">
+      <div class="eyebrow" id="timerLabel">READY TO FOCUS?</div>
+      <div class="time" id="time">25:00</div>
+      <p id="timerStatus">Every focused minute counts.</p>
+      <div class="row" style="justify-content:center;flex-wrap:wrap">
+        <button class="mint" id="startBtn" onclick="startTimer()">▶ Start</button>
+        <button class="secondary" onclick="pauseTimer()">Ⅱ Pause</button>
+        <button class="secondary" onclick="resetTimer()">↻ Reset</button>
+      </div>
+    </div>
+    <label for="duration">Session length</label>
+    <select id="duration" onchange="changeDuration()">
+      <option value="15">15 minutes</option>
+      <option value="25" selected>25 minutes</option>
+      <option value="30">30 minutes</option>
+      <option value="45">45 minutes</option>
+      <option value="60">60 minutes</option>
+    </select>
+    <p class="small">Tip: Put your phone on Do Not Disturb while studying. This web app cannot block other phone apps by itself.</p>
+  </div>
+</section>
+
+<section id="tasks" class="hidden">
+  <h1>✅ Study Tasks</h1>
+  <p class="muted">Write down what you need to finish today.</p>
+  <div class="card">
+    <label for="taskInput">New study task</label>
+    <div class="row">
+      <input id="taskInput" placeholder="e.g. Revise KTG formulas">
+      <button onclick="addTask()">Add</button>
+    </div>
+    <div id="tasksList"></div>
+  </div>
+</section>
+
+<section id="progress" class="hidden">
+  <h1>📈 My Progress</h1>
+  <p class="muted">Your saved study journey, all in one place.</p>
+  <div class="card">
+    <div class="stats">
+      <div class="stat"><strong id="totalMinutes">0</strong><span>Minutes studied</span></div>
+      <div class="stat"><strong id="totalSessions">0</strong><span>Focus sessions</span></div>
+      <div class="stat"><strong id="totalDays">0</strong><span>Study days</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>🎯 Daily study goal</h2>
+    <label for="goal">Target minutes per day</label>
+    <input type="number" id="goal" min="15" max="1440" value="120" onchange="saveGoal()">
+    <div class="progress"><div id="goalBar"></div></div>
+    <p class="muted" id="goalText">0 / 120 minutes today</p>
+  </div>
+  <div class="card">
+    <h2>💾 Your data</h2>
+    <p class="muted">Your progress is stored in this browser on this phone.</p>
+    <button class="secondary" onclick="exportData()">Export backup</button>
+  </div>
+</section>
+</main>
+
+<footer>
+  <button id="nav-home" class="active" onclick="go('home')">⌂ Home</button>
+  <button id="nav-tracking" onclick="go('tracking')">📚 Study</button>
+  <button id="nav-focus" onclick="go('focus')">⏱ Focus</button>
+  <button id="nav-tasks" onclick="go('tasks')">☑ Tasks</button>
+  <button id="nav-progress" onclick="go('progress')">📈 Progress</button>
+</footer>
+
+<script>
+const KEY='focusforge_student_v1';
+const quotes=[
+'Small progress every day adds up to big results.',
+'Your future is created by what you do today.',
+'Focus on progress, not perfection.',
+'One chapter at a time. One goal at a time.',
+'Discipline today creates freedom tomorrow.',
+'You do not need to be perfect. Just keep going.'
+];
+const defaultSubjects=['Physics','Chemistry','Mathematics'];
+let data;
+try{data=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!data||typeof data!=='object')data={days:{},subjects:defaultSubjects,tasks:[],goal:120};
+if(!data.days)data.days={};
+if(!Array.isArray(data.subjects))data.subjects=defaultSubjects;
+if(!Array.isArray(data.tasks))data.tasks=[];
+if(!data.goal)data.goal=120;
+
+function dateKey(d=new Date()){
+ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function dayData(k=dateKey()){
+ if(!data.days[k])data.days[k]={checked:{},minutes:0,sessions:0};
+ if(!data.days[k].checked)data.days[k].checked={};
+ return data.days[k];
+}
+function save(){
+ try{localStorage.setItem(KEY,JSON.stringify(data))}
+ catch(e){alert('Storage is full. Export your backup and remove some old data.')}
+}
+function completedToday(){return Object.values(dayData().checked).filter(Boolean).length}
+function getStreak(){
+ let n=0,d=new Date();
+ if(!data.days[dateKey(d)]){
+  d.setDate(d.getDate()-1);
+  if(!data.days[dateKey(d)])return 0;
+ }
+ while(data.days[dateKey(d)]){
+  n++;d.setDate(d.getDate()-1);
+ }
+ return n;
+}
+function go(id){
+ document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));
+ document.getElementById(id).classList.remove('hidden');
+ document.querySelectorAll('footer button').forEach(b=>b.classList.remove('active'));
+ const nav=document.getElementById('nav-'+id);
+ if(nav)nav.classList.add('active');
+ render();
+ window.scrollTo(0,0);
+}
+function render(){
+ const now=new Date();
+ document.getElementById('dateText').textContent=now.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'}).toUpperCase();
+ document.getElementById('quote').textContent=quotes[Math.floor(Date.now()/86400000)%quotes.length];
+ document.getElementById('streak').textContent=getStreak();
+ document.getElementById('missionText').textContent=completedToday()?'Great work! Keep your momentum going.':'Complete one focused study session.';
+ document.getElementById('missionCount').textContent=dayData().sessions+' of 1 sessions completed';
+ document.getElementById('missionBar').style.width=Math.min(100,dayData().sessions*100)+'%';
+ document.getElementById('subjectSummary').textContent=completedToday()+' / '+data.subjects.length+' subjects completed';
+ document.getElementById('taskSummary').textContent=data.tasks.filter(t=>t.done).length+' / '+data.tasks.length+' completed';
+ renderWeek();renderSubjects();renderTasks();renderStats();
+}
+function renderWeek(){
+ const names=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+ const d=new Date();d.setDate(d.getDate()-((d.getDay()+6)%7));
+ document.getElementById('week').innerHTML='';
+ for(let i=0;i<7;i++){
+  const x=new Date(d);x.setDate(d.getDate()+i);
+  const k=dateKey(x),done=!!data.days[k];
+  const el=document.createElement('div');el.className='day';
+  const label=document.createElement('div');label.textContent=names[x.getDay()];
+  const dot=document.createElement('div');dot.className='dot'+(done?' done':'');
+  dot.textContent=done?'✓':x.getDate();
+  el.append(label,dot);document.getElementById('week').append(el);
+ }
+}
+function renderSubjects(){
+ const el=document.getElementById('subjects');el.innerHTML='';
+ data.subjects.forEach((name,i)=>{
+  const line=document.createElement('div');line.className='subject';
+  const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!dayData().checked[name];
+  cb.onchange=()=>{dayData().checked[name]=cb.checked;save();render()};
+  const txt=document.createElement('span');txt.textContent=name;
+  if(cb.checked)txt.className='checked';
+  const del=document.createElement('button');del.className='danger';del.textContent='×';del.title='Delete subject';
+  del.onclick=()=>{data.subjects.splice(i,1);save();render()};
+  line.append(cb,txt,del);el.append(line);
+ });
+}
+function addSubject(){
+ const el=document.getElementById('subjectInput'),name=el.value.trim();
+ if(!name)return;
+ if(data.subjects.some(s=>s.toLowerCase()===name.toLowerCase())){alert('This subject already exists.');return}
+ data.subjects.push(name);el.value='';save();render();
+}
+function addTask(){
+ const el=document.getElementById('taskInput'),name=el.value.trim();
+ if(!name)return;
+ data.tasks.push({name,done:false,id:Date.now()+Math.random()});
+ el.value='';save();render();
+}
+function renderTasks(){
+ const el=document.getElementById('tasksList');el.innerHTML='';
+ if(!data.tasks.length){const p=document.createElement('p');p.className='muted';p.textContent='No tasks yet. Add your first study task above.';el.append(p)}
+ data.tasks.forEach(t=>{
+  const line=document.createElement('div');line.className='task';
+  const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!t.done;
+  cb.onchange=()=>{t.done=cb.checked;save();render()};
+  const txt=document.createElement('span');txt.textContent=t.name;if(t.done)txt.className='checked';
+  const del=document.createElement('button');del.className='danger';del.textContent='×';del.onclick=()=>{data.tasks=data.tasks.filter(x=>x.id!==t.id);save();render()};
+  line.append(cb,txt,del);el.append(line);
+ });
+}
+function renderStats(){
+ let minutes=0,sessions=0,days=0;
+ Object.values(data.days).forEach(d=>{minutes+=Number(d.minutes)||0;sessions+=Number(d.sessions)||0;if((d.minutes||0)>0||(d.sessions||0)>0||Object.values(d.checked||{}).some(Boolean))days++});
+ document.getElementById('totalMinutes').textContent=minutes;
+ document.getElementById('totalSessions').textContent=sessions;
+ document.getElementById('totalDays').textContent=days;
+ document.getElementById('goal').value=data.goal;
+ const today=dayData().minutes,goal=Number(data.goal)||120;
+ document.getElementById('goalBar').style.width=Math.min(100,today/goal*100)+'%';
+ document.getElementById('goalText').textContent=today+' / '+goal+' minutes today';
+}
+function saveGoal(){
+ data.goal=Math.max(15,Math.min(1440,Number(document.getElementById('goal').value)||120));save();render();
+}
+
+let remaining=25*60,interval=null,endAt=0;
+function displayTime(){
+ const m=Math.floor(remaining/60),s=remaining%60;
+ document.getElementById('time').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+function changeDuration(){
+ if(interval){clearInterval(interval);interval=null}
+ remaining=Number(document.getElementById('duration').value)*60;
+ document.getElementById('timerStatus').textContent='Ready when you are.';
+ document.getElementById('timerLabel').textContent='READY TO FOCUS?';
+ document.getElementById('startBtn').textContent='▶ Start';displayTime();
+}
+function startTimer(){
+ if(interval)return;
+ if(remaining<=0)changeDuration();
+ endAt=Date.now()+remaining*1000;
+ document.getElementById('timerLabel').textContent='FOCUS MODE';
+ document.getElementById('timerStatus').textContent='Stay focused. You can do this!';
+ document.getElementById('startBtn').textContent='▶ Running';
+ interval=setInterval(()=>{
+  remaining=Math.max(0,Math.ceil((endAt-Date.now())/1000));displayTime();
+  if(remaining<=0){
+   clearInterval(interval);interval=null;
+   const d=dayData();d.minutes+=Number(document.getElementById('duration').value);d.sessions++;
+   save();document.getElementById('timerLabel').textContent='SESSION COMPLETE 🎉';
+   document.getElementById('timerStatus').textContent='Excellent work! Take a short break.';
+   document.getElementById('startBtn').textContent='▶ Start';
+   render();
+   alert('Focus session complete! Your progress has been saved.');
+  }
+ },250);
+}
+function pauseTimer(){
+ if(interval){clearInterval(interval);interval=null;remaining=Math.max(0,Math.ceil((endAt-Date.now())/1000));displayTime();document.getElementById('timerStatus').textContent='Paused. Resume when ready.';document.getElementById('startBtn').textContent='▶ Resume'}
+}
+function resetTimer(){
+ if(interval){clearInterval(interval);interval=null}
+ remaining=Number(document.getElementById('duration').value)*60;
+ document.getElementById('timerLabel').textContent='READY TO FOCUS?';
+ document.getElementById('timerStatus').textContent='Timer reset. Start when ready.';
+ document.getElementById('startBtn').textContent='▶ Start';displayTime();
+}
+function exportData(){
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='focusforge-backup.json';a.click();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+document.getElementById('taskInput').addEventListener('keydown',e=>{if(e.key==='Enter')addTask()});
+document.getElementById('subjectInput').addEventListener('keydown',e=>{if(e.key==='Enter')addSubject()});
+render();displayTime();
+</script>
+</body>
+</html>
+
